@@ -126,3 +126,57 @@ output:
            9      3.0000      2.0801      4.3267
           10      3.1623      2.1544      4.6416
 ```
+---
+**Create functions to compute the mean and standard deviation of an array and compute the mean, standard deviation, minimum, and maximum of [10.0, 20.0, 30.0, 40.0]**
+
+**Haskell**
+
+```Haskell
+stats :: [Double] -> (Double, Double, Double, Double)
+stats xs = (mean xs, stddev xs, minimum xs, maximum xs)
+
+mean :: [Double] -> Double
+mean xs = sum xs / fromIntegral (length xs)
+
+stddev :: [Double] -> Double
+stddev xs = sqrt $ sum [(x - m) ** 2 | x <- xs] / fromIntegral (length xs - 1)
+  where m = mean xs
+
+main :: IO ()
+main = print $ stats [10.0, 20.0, 30.0, 40.0]
+```
+
+output: `(25.0,12.909944487358056,10.0,40.0)`
+
+**Fortran**
+
+```Fortran
+module m
+  implicit none
+  integer, parameter :: dp = kind(1.0d0)
+contains
+  function stats(x)
+    real(kind=dp), intent(in) :: x(:)
+    real(kind=dp) :: stats(4)
+    stats = [mean(x), stddev(x), minval(x), maxval(x)]
+  end function stats
+  
+  real(kind=dp) function mean(x)
+    real(kind=dp), intent(in) :: x(:)
+    mean = sum(x)/size(x)
+  end function mean
+
+  real(kind=dp) function stddev(x)
+    real(kind=dp), intent(in) :: x(:)
+    stddev = sqrt(sum((x - mean(x))**2) / (size(x) - 1))
+  end function stddev
+end module m
+
+program main
+  use m
+  implicit none
+  print*,stats([10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp])
+end
+```
+
+output: `25.000000000000000        12.909944487358056        10.000000000000000        40.000000000000000     `
