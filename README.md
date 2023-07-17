@@ -151,7 +151,7 @@ output: `(25.0,12.909944487358056,10.0,40.0)`
 **Fortran**
 
 ```Fortran
-module m
+module stats_mod
   implicit none
   integer, parameter :: dp = kind(1.0d0)
 contains
@@ -170,10 +170,10 @@ contains
     real(kind=dp), intent(in) :: x(:)
     stddev = sqrt(sum((x - mean(x))**2) / (size(x) - 1))
   end function stddev
-end module m
+end module stats_mod
 
 program main
-  use m
+  use stats_mod
   implicit none
   print*,stats([10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp])
 end
@@ -220,11 +220,11 @@ Standard Deviation: 12.909944487358056
 
 **Fortran**
 
-Module m was defined above and is stored in `m.f90`. The main program is
+Module `stats_mod` was defined above and is stored in `stats.f90`. The main program is
 
 file `main.f90`
 ```Fortran
-  use m
+  use stats_mod
   implicit none
   real(kind=dp), parameter :: x(*) = [10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp]
   print*,"Mean:", mean(x)
@@ -232,7 +232,7 @@ file `main.f90`
 end program
 ```
 
-Compile with `gfortran m.f90 main.f90`<br>
+Compile with `gfortran stats.f90 main.f90`<br>
 output:
 ```
  Mean:   25.000000000000000     
