@@ -180,3 +180,64 @@ end
 ```
 
 output: `25.000000000000000        12.909944487358056        10.000000000000000        40.000000000000000     `
+
+---
+
+**Define functions to compute the mean and standard deviation in one source file and call those functions from a main program.**
+
+**Haskell**
+
+file `stats.hs`
+```Haskell
+module Stats (mean, stddev) where
+
+mean :: [Double] -> Double
+mean xs = sum xs / fromIntegral (length xs)
+
+stddev :: [Double] -> Double
+stddev xs = sqrt $ sum [(x - m) ** 2 | x <- xs] / fromIntegral (length xs - 1)
+  where m = mean xs
+```
+
+file `xstats.hs`
+```Haskell
+import Stats (mean, stddev)
+
+main :: IO ()
+main = do
+    let xs = [10.0, 20.0, 30.0, 40.0]
+    putStrLn $ "Mean: " ++ show (mean xs)
+    putStrLn $ "Standard Deviation: " ++ show (stddev xs)
+```
+
+Compile with `ghc xstats.hs`.
+
+output:
+```
+Mean: 25.0
+Standard Deviation: 12.909944487358056
+```
+
+**Fortran**
+
+Module m was defined above and is stored in `m.f90`. The main program is
+
+file `main.f90`
+```Fortran
+  use m
+  implicit none
+  real(kind=dp), parameter :: x(*) = [10.0_dp, 20.0_dp, 30.0_dp, 40.0_dp]
+  print*,"Mean:", mean(x)
+  print*,"Standard Deviation:", stddev(x)
+end program
+```
+
+Compile with `gfortran m.f90 main.f90`<br>
+output:
+```
+ Mean:   25.000000000000000     
+ Standard Deviation:   12.909944487358056
+```
+
+
+
