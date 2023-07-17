@@ -1,5 +1,5 @@
 # Haskell and Fortran
-Here are Haskell and Fortran programs to solve the same problems. The Glasgow Haskell Compiler and gfortran are used.
+Here are Haskell and Fortran programs to solve the same problems, which I am writing to learn Haskell. The Glasgow Haskell Compiler and gfortran are used.
 
 **Compute the primes below 50, using the Sieve of Eratosthenes and excluding even numbers above 2 and considering only factors up to sqrt(n).**
 
