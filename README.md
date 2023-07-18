@@ -427,4 +427,51 @@ twice a
     14.0    16.0    18.0
 ```
 
+---
+**Define a data type date(year, month), and write functions to print it and create a sequence of dates**
+
+**Haskell**
+
+file `dateutils.hs`
+
+```Haskell
+module DateUtils (Date(..), dateToString, sequenceOfDates) where
+
+import Text.Printf (printf)
+
+data Date = Date{year :: Int, month :: Int} deriving (Show, Eq)
+
+-- Convert a Date to a string in the format "yyyy-mm"
+dateToString :: Date -> String
+dateToString (Date y m) = printf "%04d-%02d" y m
+
+-- Generate a sequence of dates, starting from a given date and for a given number of months
+sequenceOfDates :: Date -> Int -> [Date]
+sequenceOfDates startDate numDates = take numDates $ iterate nextMonth startDate
+  where
+    nextMonth (Date y m) 
+        | m < 12 = Date y (m + 1)
+        | otherwise = Date (y + 1) 1
+```
+
+main program
+```Haskell
+import DateUtils (Date(..), dateToString, sequenceOfDates)
+
+main :: IO ()
+main = do
+    mapM_ (putStrLn . dateToString) $ sequenceOfDates Date{year = 2023, month = 11} 4
+```
+
+output:
+```
+2023-11
+2023-12
+2024-01
+2024-02
+```
+
+**Fortran**
+
+
 
