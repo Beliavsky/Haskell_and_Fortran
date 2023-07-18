@@ -511,5 +511,12 @@ program main
 end program main
 ```
 
+output:
+```
+2023-11
+2023-12
+2024-01
+2024-02
+```
 
 
