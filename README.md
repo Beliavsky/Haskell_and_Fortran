@@ -435,19 +435,19 @@ twice a
 file `dateutils.hs`
 
 ```Haskell
-module DateUtils (Date(..), dateToString, sequenceOfDates) where
+module DateUtils (Date(..), strDate, seqDate) where
 
 import Text.Printf (printf)
 
 data Date = Date{year :: Int, month :: Int} deriving (Show, Eq)
 
 -- Convert a Date to a string in the format "yyyy-mm"
-dateToString :: Date -> String
-dateToString (Date y m) = printf "%04d-%02d" y m
+strDate :: Date -> String
+strDate (Date y m) = printf "%04d-%02d" y m
 
 -- Generate a sequence of dates, starting from a given date and for a given number of months
-sequenceOfDates :: Date -> Int -> [Date]
-sequenceOfDates startDate numDates = take numDates $ iterate nextMonth startDate
+seqDate :: Date -> Int -> [Date]
+seqDate startDate numDates = take numDates $ iterate nextMonth startDate
   where
     nextMonth (Date y m) 
         | m < 12 = Date y (m + 1)
@@ -456,11 +456,11 @@ sequenceOfDates startDate numDates = take numDates $ iterate nextMonth startDate
 
 main program
 ```Haskell
-import DateUtils (Date(..), dateToString, sequenceOfDates)
+import DateUtils (Date(..), strDate, seqDate)
 
 main :: IO ()
 main = do
-    mapM_ (putStrLn . dateToString) $ sequenceOfDates Date{year = 2023, month = 11} 4
+    mapM_ (putStrLn . strDate) $ seqDate Date{year = 2023, month = 11} 4
 ```
 
 output:
