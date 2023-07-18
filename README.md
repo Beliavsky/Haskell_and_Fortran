@@ -239,5 +239,192 @@ output:
  Standard Deviation:   12.909944487358056
 ```
 
+---
+
+**Matrix operations**
+
+**Haskell**
+```Haskell
+{-# LANGUAGE FlexibleContexts #-}
+
+import Prelude hiding ((<>))
+import Numeric.LinearAlgebra
+
+main :: IO ()
+main = do
+    -- Create a 3x3 matrix
+    let a = (3><3) [1..9] :: Matrix R
+    putStrLn "Matrix a:"
+    print a
+
+    putStrLn "\n Matrix a squared:"
+    print $ a <> a
+
+    putStrLn "\n Transpose:"
+    print $ tr a
+
+    putStrLn "\n Maximum:"
+    print $ maxElement a
+
+    putStrLn "\n Sum:"
+    print $ sumElements a
+
+    putStrLn "\n Sum of each column:"
+    print $ fromList [sumElements v | v <- toColumns a]
+
+ -- rows and columns are numbered from 0
+    putStrLn "\n element in 2nd row and 3rd column:"
+    print $ a `atIndex` (1,2)
+
+    putStrLn "\n 2nd row:"
+    print (a ? [1])
+
+    putStrLn "\n 2nd column:"
+    print (tr a ? [1])
+
+    putStrLn "\n twice a:"
+    print $ cmap (*2) a
+```
+output:
+```
+Matrix a:
+(3><3)
+ [ 1.0, 2.0, 3.0
+ , 4.0, 5.0, 6.0
+ , 7.0, 8.0, 9.0 ]
+
+ Matrix a squared:
+(3><3)
+ [  30.0,  36.0,  42.0
+ ,  66.0,  81.0,  96.0
+ , 102.0, 126.0, 150.0 ]
+
+ Transpose of matrix a:
+(3><3)
+ [ 1.0, 4.0, 7.0
+ , 2.0, 5.0, 8.0
+ , 3.0, 6.0, 9.0 ]
+
+ Maximum of matrix a:
+9.0
+
+ Sum of elements of matrix a:
+45.0
+
+ Sum of each column in matrix a:
+[12.0,15.0,18.0]
+
+ element in 2nd row and 3rd column:
+6.0
+
+ 2nd row:
+(1><3)
+ [ 4.0, 5.0, 6.0 ]
+
+ 2nd column:
+(1><3)
+ [ 2.0, 5.0, 8.0 ]
+
+ twice a:
+(3><3)
+ [  2.0,  4.0,  6.0
+ ,  8.0, 10.0, 12.0
+ , 14.0, 16.0, 18.0 ]
+```
+
+**Fortran**
+```Fortran
+module m
+  implicit none
+contains
+  subroutine print_mat(x)
+    real, intent(in) :: x(:,:)
+    integer          :: i
+    do i=1,size(x,1)
+       print "(*(f8.1))", x(i,:)
+    end do
+  end subroutine print_mat
+end module m
+
+program main
+  use m
+  implicit none
+  integer, parameter :: n = 3
+  real :: a(n,n)
+  integer :: i
+  character (len=*), parameter :: fmt_c = "(/,a)", fmt_r = "(*(f8.1))"
+  a = transpose(reshape([(i, i=1,n**2)], [n,n]))
+  print fmt_c, "Matrix a:"
+  call print_mat(a)
+
+  print fmt_c, "Matrix a squared:"
+  call print_mat(matmul(a,a))
+
+  print fmt_c, "Transpose:"
+  call print_mat(transpose(a))
+
+  print fmt_c, "Maximum:"
+  print fmt_r, maxval(a)
+
+  print fmt_c, "Sum:"
+  print fmt_r, sum(a)
+
+  print fmt_c, "Sum of each column:"
+  print fmt_r, sum(a, dim=1)
+
+  print fmt_c, "element in 2nd row and 3rd column"
+  print fmt_r, a(2,3)
+
+  print fmt_c, "2nd row"
+  print fmt_r, a(2,:)
+
+  print fmt_c, "2nd column"
+  print fmt_r, a(:,2)
+
+  print fmt_c, "twice a"
+  call print_mat(2*a)
+end
+```
+
+output:
+```
+Matrix a:
+     1.0     2.0     3.0
+     4.0     5.0     6.0
+     7.0     8.0     9.0
+
+Matrix a squared:
+    30.0    36.0    42.0
+    66.0    81.0    96.0
+   102.0   126.0   150.0
+
+Transpose:
+     1.0     4.0     7.0
+     2.0     5.0     8.0
+     3.0     6.0     9.0
+
+Maximum:
+     9.0
+
+Sum:
+    45.0
+
+Sum of each column:
+    12.0    15.0    18.0
+
+element in 2nd row and 3rd column
+     6.0
+
+2nd row
+     4.0     5.0     6.0
+
+2nd column
+     2.0     5.0     8.0
+
+twice a
+     2.0     4.0     6.0
+     8.0    10.0    12.0
+    14.0    16.0    18.0
+```
 
 
