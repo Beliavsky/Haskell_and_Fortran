@@ -473,5 +473,43 @@ output:
 
 **Fortran**
 
+```Fortran
+module DateUtils
+  implicit none
+  type :: Date
+     integer :: year, month
+  end type Date
+contains
+  elemental character (len=7) function strDate(xDate)
+    ! Convert a Date to a string in the format "yyyy-mm"
+    type(Date), intent(in) :: xDate
+    write (strDate,"(i4.4,'-',i2.2)") xDate
+  end function strDate
+
+  function seqDate(xDate, numDates) result(Dates)
+    ! Generate a sequence of dates, starting from a given date and for a given number of months
+    type(Date), intent(in) :: xDate
+    integer, intent(in) :: numDates
+    type(Date) :: Dates(numDates)
+    integer :: i
+    if (numDates < 1) return
+    Dates(1) = xDate
+    do i=2,numDates
+       if (Dates(i-1)%month == 12) then
+          Dates(i) = Date(Dates(i-1)%year + 1, 1)
+       else
+          Dates(i) = Date(Dates(i-1)%year, Dates(i-1)%month + 1)
+       end if
+    end do
+  end function seqDate
+end module DateUtils
+
+program main
+  use DateUtils
+  implicit none
+  print "(a)", strDate(seqDate(Date(2023, 11), 4))
+end program main
+```
+
 
 
