@@ -560,7 +560,7 @@ Roots:
 0.0 :+ (-3.0)
 ```
 
-**Fortran**
+**Fortran** (default reals have been used in this code for simplicity)
 ```Fortran
 module quadratic_mod
   implicit none
