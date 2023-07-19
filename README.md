@@ -609,3 +609,84 @@ output:
              (2.00000000,0.00000000)
             (0.00000000,-3.00000000)
 ```
+
+---
+**Read a matrix from a file, where the first line contains the dimensions of the matrix and following lines contain rows of the matrix.**
+
+File `data.txt` contains
+```
+2 3
+10.0 20.0 30.0
+40.0 50.0 60.0
+```
+
+**Haskell**
+```Haskell
+import System.IO
+import Data.List.Split
+import Text.Read
+
+-- Function to convert a string to a list of Doubles
+strToDoubleList :: String -> [Double]
+strToDoubleList s = map read (words s)
+
+-- Main function
+main :: IO ()
+main = do
+  -- Open the file
+  handle <- openFile "data.txt" ReadMode
+  -- Read the first line
+  dims <- hGetLine handle
+  let [rows, cols] = map read $ words dims
+  -- Read the rest of the file
+  contents <- hGetContents handle
+  -- Split the contents into lines, then convert each line to a list of Doubles
+  let matrix = map strToDoubleList (take rows (lines contents))
+  -- Print the matrix
+  mapM_ print matrix
+  -- Close the file
+  hClose handle
+```
+
+output:
+```
+[10.0,20.0,30.0]
+[40.0,50.0,60.0]
+```
+
+**Fortran**
+
+```Fortran
+program read_matrix
+    implicit none
+    integer :: i, rows, cols, iu
+    integer, parameter :: dp = kind(1.0d0)
+    real(kind=dp), allocatable :: matrix(:,:)
+    open(newunit=iu, file='data.txt', action="read")
+
+    ! Read the number of rows and columns
+    read(iu, *) rows, cols
+
+    ! Allocate the matrix
+    allocate(matrix(rows, cols))
+
+    ! Read the matrix
+    do i = 1, rows
+        read(iu, *) matrix(i, 1:cols)
+    end do
+
+    ! Print the matrix
+    do i = 1, rows
+        print *, matrix(i, 1:cols)
+    end do
+
+    ! Close the file
+    close(iu)
+end program read_matrix
+```
+
+output:
+```
+   10.000000000000000        20.000000000000000        30.000000000000000     
+   40.000000000000000        50.000000000000000        60.000000000000000
+```
