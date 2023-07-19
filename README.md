@@ -519,4 +519,93 @@ output:
 2024-02
 ```
 
+---
+**Compute the complex roots of a quadratic equation**
 
+**Haskell**
+```Haskell
+import Data.Complex
+
+-- The function roots takes three Complex numbers a, b, and c
+-- (representing the coefficients of the quadratic equation ax^2 + bx + c = 0),
+-- and returns a pair of Complex numbers (representing the two roots of the equation).
+roots :: (RealFloat a) => Complex a -> Complex a -> Complex a -> (Complex a, Complex a)
+roots a b c = ((-b + sqrt (b*b - 4*a*c)) / (2*a), (-b - sqrt (b*b - 4*a*c)) / (2*a))
+
+main :: IO ()
+main = do
+-- Here ":+" is used to create a complex number. The number before ":+" is the real part,
+-- and the number after ":+" is the imaginary part.
+    let a = (1.0 :+ 0.0)
+    let b = ((-2.0) :+ 3.0)
+    let c = (0.0 :+ (-6.0))
+    putStrLn $ "Coefficients of the equation:"
+    putStrLn $ "a = " ++ show a
+    putStrLn $ "b = " ++ show b
+    putStrLn $ "c = " ++ show c
+    let (root1, root2) = roots a b c
+    putStrLn "Roots:"
+    print root1
+    print root2
+```
+
+output:
+```
+Coefficients of the equation:
+a = 1.0 :+ 0.0
+b = (-2.0) :+ 3.0
+c = 0.0 :+ (-6.0)
+Roots:
+2.0 :+ 0.0
+0.0 :+ (-3.0)
+```
+
+**Fortran**
+```Fortran
+module quadratic_mod
+  implicit none
+  contains
+
+! The subroutine roots takes three Complex numbers a, b, and c
+! (representing the coefficients of the quadratic equation ax^2 + bx + c = 0),
+! and returns a pair of Complex numbers (representing the two roots of the equation).
+    subroutine roots(a, b, c, root1, root2)
+    complex, intent(in) :: a, b, c
+    complex, intent(out) :: root1, root2
+    root1 = ((-b + sqrt(b*b - 4.0*a*c)) / (2.0*a))
+    root2 = ((-b - sqrt(b*b - 4.0*a*c)) / (2.0*a))
+  end subroutine roots
+end module quadratic_mod
+
+program main
+  use quadratic_mod
+  implicit none
+  complex :: a, b, c, root1, root2
+
+  a = (1.0, 0.0)
+  b = (-2.0, 3.0)
+  c = (0.0, -6.0)
+
+  print*, "Coefficients of the equation are"
+  print*, "a = ", a
+  print*, "b = ", b
+  print*, "c = ", c
+
+  call roots(a, b, c, root1, root2)
+
+  print*, "Roots are:"
+  print*, root1
+  print*, root2
+end program main
+```
+
+output:
+```
+ Coefficients of the equation are
+ a =              (1.00000000,0.00000000)
+ b =             (-2.00000000,3.00000000)
+ c =             (0.00000000,-6.00000000)
+ Roots are:
+             (2.00000000,0.00000000)
+            (0.00000000,-3.00000000)
+```
