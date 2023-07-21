@@ -690,3 +690,95 @@ output:
    10.000000000000000        20.000000000000000        30.000000000000000     
    40.000000000000000        50.000000000000000        60.000000000000000
 ```
+
+---
+
+**Write a generic function that returns the positions of changed elements, including the first position, in a 1-D array.**
+
+**Haskell**
+
+```Haskell
+-- The changePositions function takes a list of any type that supports equality testing as input.
+-- If the input list is empty, it returns an empty list.
+-- If the input list is not empty, it returns a list containing 0 followed by the positions of changes in the input list.
+changePositions :: Eq a => [a] -> [Int]
+changePositions [] = [] -- Base case: if the input list is empty, return an empty list.
+changePositions xs = 0 : [i | (i, (x, y)) <- zip [1..] (zip xs (tail xs)), x /= y]
+-- Recursive case: if the input list is not empty...
+-- 1. Zip the input list with its tail, creating a list of pairs, where each pair consists of an element of xs and its successor.
+-- 2. Zip this list of pairs with the list [1..], effectively assigning an index to each pair.
+-- 3. Use a list comprehension to select the indices where a change occurred (i.e., where the two elements in a pair are not equal).
+-- 4. Prepend 0 to the resulting list.
+
+main :: IO ()
+main = do -- test with lists of integer and strings
+    print $ changePositions [3, 3, 6, 2, 2, 2, 1] -- Expected output: [0, 2, 3, 6]
+    print $ changePositions ["a", "a", "b", "p", "p", "p", "o"] -- Expected output: [0, 2, 3, 6]
+```
+
+```
+[0,2,3,6]
+[0,2,3,6]
+```
+
+**Fortran** (works only for integers and character variables)
+
+```Fortran
+module list_mod
+  implicit none
+  interface change_positions
+     module procedure :: change_positions_int, change_positions_char
+  end interface change_positions
+contains
+  function change_positions_int(vec) result(pos)
+    integer, intent(in)  :: vec(:)
+    integer, allocatable :: pos(:)
+    integer :: i,j,n
+    n = size(vec)
+    allocate (pos(n))
+    if (n < 1) return
+    pos = 0
+    pos(1) = 1
+    j = 1
+    do i=2,n
+       if (vec(i) /= vec(i-1)) then
+          j = j+1
+          pos(j) = i
+       end if
+    end do
+    pos = pack(pos, pos > 0)
+  end function change_positions_int
+
+  function change_positions_char(vec) result(pos)
+    character (len=*), intent(in)  :: vec(:)
+    integer, allocatable :: pos(:)
+    integer :: i,j,n
+    n = size(vec)
+    allocate (pos(n))
+    if (n < 1) return
+    pos = 0
+    pos(1) = 1
+    j = 1
+    do i=2,n
+       if (vec(i) /= vec(i-1)) then
+          j = j+1
+          pos(j) = i
+       end if
+    end do
+    pos = pack(pos, pos > 0)
+  end function change_positions_char
+end module list_mod
+!
+program main
+  use list_mod
+  implicit none
+  print*,change_positions([3, 3, 6, 2, 2, 2, 1])
+    print*,change_positions(["a", "a", "b", "p", "p", "p", "o"])
+end program main
+```
+
+output:
+```
+           1           3           4           7
+           1           3           4           7
+```
