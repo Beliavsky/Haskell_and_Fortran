@@ -692,6 +692,52 @@ output:
 ```
 
 ---
+**Read an unknown number of integers from a file, one per line**
+
+The file `integers.txt` has contents
+```
+10
+20
+30
+```
+
+**Haskell**
+```Haskell
+main = do
+    content <- readFile "integers.txt"           -- Read the content of the file
+    let linesOfFiles = lines content             -- Split the content by newlines
+    let numbers = map read linesOfFiles :: [Int] -- Convert each line to an integer
+    print numbers                                -- Print the list of numbers
+```
+output:
+```
+[10,20,30]
+```
+**Fortran**
+```Fortran
+program main
+  implicit none
+  integer, parameter :: max_read = 10**6
+  integer, allocatable :: numbers(:)
+  integer :: i,iu,ierr
+  allocate (numbers(max_read))
+  open (newunit=iu, file="integers.txt", action="read") ! open the file
+  do i=1,max_read
+     read (iu,*,iostat=ierr) numbers(i) ! try to read an integer
+     if (ierr /= 0) then 
+        numbers = numbers(:i-1) ! resize numbers and exit loop if integer could not be read
+        exit
+     end if
+  end do
+  print*,numbers
+end program main
+```
+output:
+```
+          10          20          30
+```
+
+---
 
 **Write a generic function that returns the positions of changed elements, including the first position, in a 1-D array.**
 
